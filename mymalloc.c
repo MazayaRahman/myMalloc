@@ -20,8 +20,12 @@ char* findMem(unsigned int size){
             //found it
             return ptr;
         }
-        //deal with other cases like overflow
-        ptr = ptr + currSize;
+	else{
+		if(ptr + currSize + size >= root + BLOCKSIZE -1) //there isnt enough space
+			return NULL;
+	}	
+        
+        ptr = ptr + currSize + 5;
 
 
     }
@@ -36,14 +40,19 @@ void split(char* block, unsigned int size){
     int block_size = *(int*)(block+1);
 
     //extra block size
-    block_size = block_size - size - 5;
+    int extra_block_size = block_size - size -5;
+	if (extra_block_size > 0){
 
-    extra = block + size + 5;
-    *extra = isFree;
-    *(int*)(extra+1) = block_size;
-    *(block) = inUse;
-    *(int*)(block+1) = size+5;
-
+	    extra = block + size + 5;
+	    *extra = isFree;
+	    *(int*)(extra+1) = block_size;
+	    return;
+	}
+	else{ //idk what to do, there isnt enough space for metadata
+		//TODO can we do anything? or just leave empty
+		
+	}
+ 
 
 }
 
@@ -65,12 +74,14 @@ void* mymalloc(unsigned int size, char* file, int line){
     char* freeMem = findMem(size);
 
     if(freeMem != NULL){
-        //check if block is too big
+        //check if block has too much available space
         printf("found memory\n");
-        if(*(int*)(freeMem+1) > size){
+        if(*(int*)(freeMem+1) > size-5){
             printf("memory too big, splitting \n");
             split(freeMem,size);
         }
+	*(freeMem) = inUse;
+	*(int*) (freeMem+1) = size+5; //initialize the metadata
 
     }else{
         printf("no memory found\n");
