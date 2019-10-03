@@ -31,7 +31,7 @@ int main(int argc, char* argv[]){
     one = "Bye";
     printf("%s\n", one);
 
-    
+    /*
     //TESTING WORKLOADS:
     //TESTING A: malloc and free 1 byte 150 times
     int i;
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]){
     }
     
     
-    
+    */
     
     //OTHER WORKLOAD #1 - MALLOC A STRUCT    
     //OTHER WORKLOAD #2 - MALLOC A LINKED LIST
