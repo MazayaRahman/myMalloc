@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "mymalloc.h"
 
+//TESTING THIS NEW COMMIT
+
 struct testStruct{
     int testInt; //4 bytes
     char testChar; //1 bytes
