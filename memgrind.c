@@ -9,20 +9,19 @@ struct testStruct{
     char testChar; //1 bytes
 }; //total size of struct should be 5 bytes
 
-struct Node{
+typedef struct Node{
     int data; 
     struct Node* next;
-};
+}Node;
   
 int main(int argc, char* argv[]){
 
     printf("program initiated\n");
-    
-    struct testStruct test;
-    printf("size of the struct: %d\n", sizeof(test));
-    char* pointer = malloc(sizeof(test));
-    printf("malloced test struct!\n");
-    
+    void* ptr = malloc(4092); //MAX is 4091
+    //TODO ptr ends up becoming type int -- is this right? or do we return void* type
+    if (ptr == NULL)
+        printf("ptr is null\n");
+    else printf("value at malloced ptr: %p\n", ptr);
     
     
     /*
