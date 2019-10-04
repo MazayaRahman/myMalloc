@@ -17,7 +17,15 @@ struct Node{
 int main(int argc, char* argv[]){
 
     printf("program initiated\n");
-
+    
+    struct testStruct test;
+    printf("size of the struct: %d\n", sizeof(test));
+    char* pointer = malloc(sizeof(test));
+    printf("malloced test struct!\n");
+    
+    
+    
+    /*
 
     char* one = malloc(8);
     one = "hello";
@@ -32,6 +40,10 @@ int main(int argc, char* argv[]){
 
     one = "Bye";
     printf("%s\n", one);
+    
+    */
+    
+    
     /*
 //TESTING WORKLOADS:
     //TESTING A: malloc and free 1 byte 150 times
