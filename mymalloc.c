@@ -90,6 +90,4 @@ void* mymalloc(unsigned int size, char* file, int line){
 
     //return the pointer after metadata
     return freeMem+5;
-
-
 }

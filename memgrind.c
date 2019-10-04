@@ -32,14 +32,8 @@ int main(int argc, char* argv[]){
 
     one = "Bye";
     printf("%s\n", one);
-
-//<<<<<<< HEAD
     /*
-=======
-   /* 
->>>>>>> 29ac3656504eb1e4def0f8b96c317e149c8fc895
-
-    //TESTING WORKLOADS:
+//TESTING WORKLOADS:
     //TESTING A: malloc and free 1 byte 150 times
     int i;
     for (i = 0; i <150; i++){
@@ -86,15 +80,7 @@ int main(int argc, char* argv[]){
             //TODO free something
         }
     }
-    
-<<<<<<< HEAD
-    
-    */
-//=======
-  //  */
-    
-//>>>>>>> 29ac3656504eb1e4def0f8b96c317e149c8fc895
-    
+  	*/ 
     //OTHER WORKLOAD #1 - MALLOC A STRUCT    
     //OTHER WORKLOAD #2 - MALLOC A LINKED LIST
     return(0);
