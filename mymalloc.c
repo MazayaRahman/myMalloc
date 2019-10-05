@@ -5,6 +5,12 @@ static char myBlock[BLOCKSIZE] = {'\0'};
 
 char* root = myBlock;
 
+struct metadata{
+    unsigned short status: 4;
+    unsigned short size: 12;
+}; //short = 2 bytes = 16 bits; partition everything 
+
+
 int memoryLeft = 4096;
 
 const char isFree = 'f';
