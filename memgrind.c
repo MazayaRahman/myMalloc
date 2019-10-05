@@ -18,11 +18,10 @@ typedef struct Node{
 int main(int argc, char* argv[]){
 
     printf("program initiated\n");
-    void* ptr = malloc(4092); //MAX is 4091
-    //TODO ptr ends up becoming type int -- is this right? or do we return void* type
-    if (ptr == NULL)
-        printf("ptr is null\n");
-    else printf("value at malloced ptr: %p\n", ptr);
+    int* ptr = (int*)malloc(4092); //MAX is 4091
+    ptr = 523;
+    free(ptr);
+    
     
     
     /*

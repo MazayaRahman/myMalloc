@@ -66,17 +66,20 @@ void split(char* block, unsigned int size){
 
 void* mymalloc(unsigned int size, char* file, int line){
     printf("malloc is called!\n");
-    if(size <= 0 || memoryLeft<size) return NULL;
-    printf("attempint to malloc %d bytes! Therefore we need at least %d bytes. We have about %d left.\n",size,size+1,memoryLeft);
+    if(size <= 0 || memoryLeft<=size) return NULL;
+    printf("attemping to malloc %d bytes! Therefore we need at least %d bytes. We have about %d left.\n",size,size+1,memoryLeft);
 
     //check to see if root is initialized
     if(root[0] == '\0'){ //FIRST USE, MUST INSTANTIATE MEMORY BLOCK
-        //set as free
+        //set metadata as free
         printf("First use of malloc\n");
-        *root = isFree;
+        struct metadata rootMetadata;
+		rootMetadata->isFree = 1;
+		rootMetadata->size = BLOCKSIZE -1;
+		*root = isFree;
 
         //update the size of the whole block next
-        *(int*)(root+1) = BLOCKSIZE - 1; //1 will be the min metadata we can use (1 bit for char, 4 bits for int size)
+        *(int*)(root+1) = BLOCKSIZE - 1; //1 will be the min metadata we can use 
     }
 
     //FIND A BLOCK OF MEM WITH GIVEN SIZE

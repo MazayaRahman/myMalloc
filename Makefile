@@ -1,7 +1,7 @@
-all: memgrind.c mymalloc.o
-	gcc -Wall -Werror -fsanitize=address -std=c99 -o memgrind memgrind.c mymalloc.o
+all: memgrind.c mymalloc1.o
+	gcc -Wall -Werror -fsanitize=address -std=c99 -o memgrind memgrind.c mymalloc1.o
 
-mymalloc.o: mymalloc.c
+mymalloc1.o: mymalloc.c
 	gcc -c mymalloc.c
 
 clean:
