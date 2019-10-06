@@ -59,14 +59,14 @@ void split(char* block, unsigned int size){
 	    return;
 	}
 	else{ //idk what to do, there isnt enough space for metadata
-		
+		printf("HERE\n");	
 		return;
 	}
 }
 
 void* mymalloc(unsigned int size, char* file, int line){
     printf("malloc is called!\n");
-    if(size <= 0 || memoryLeft<=size) return NULL;
+    if(size <= 0 || memoryLeft<=size || memoryLeft <= 2) return NULL;
     printf("attemping to malloc %d bytes! Therefore we need at least %d bytes. We have about %d left.\n",size,size+2,memoryLeft);
 
     //check to see if root is initialized
@@ -87,8 +87,8 @@ void* mymalloc(unsigned int size, char* file, int line){
 
     if(freeMem != NULL){
         //check if block has too much available space
-        printf("found memory\n");
-        printf("freeMem+1 is %d\n",*(int*)(freeMem+1));
+        //printf("found memory\n");
+	printf("freeMem+1 is %d\n",*(int*)(freeMem+1));
         if(*(int*)(freeMem+1) > size){
             printf("leftover memory too big, splitting \n");
             split(freeMem,size);
