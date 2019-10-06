@@ -88,6 +88,7 @@ void* mymalloc(unsigned int size, char* file, int line){
     if(freeMem != NULL){
         //check if block has too much available space
         printf("found memory\n");
+        printf("freeMem+1 is %d\n",*(int*)(freeMem+1));
         if(*(int*)(freeMem+1) > size-2){
             printf("leftover memory too big, splitting \n");
             split(freeMem,size);
