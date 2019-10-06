@@ -21,8 +21,9 @@ char* findMem(unsigned int size){
 
     //start at root
     char* ptr = root;
+    //int* currSize;
     int currSize = 0;
-    printf("in findmem root: %d\n", *root);
+	printf("in findmem root: %d\n", *root);
     while(ptr != NULL){
         currSize = *(int*)(ptr+1);
         printf("currSize compared to size: %d, %d\n", currSize,size);
@@ -59,7 +60,7 @@ void split(char* block, unsigned int size){
         extraMetadata.status = isFree;
         extraMetadata.size = extra_block_size;
 	    extra = block + size + 2;
-	    *extra = extraMetadata.staus;
+	    *extra = extraMetadata.status;
 	    *(int*)(extra+1) = extraMetadata.size;
 	    return;
 	}
@@ -83,7 +84,7 @@ void* mymalloc(unsigned int size, char* file, int line){
 		rootMetadata.status = isFree;
 		rootMetadata.size = BLOCKSIZE -2;
 		printf("rootmetadata size = %d\n", rootMetadata.size);
-		*root = rootMetadata.isFree;
+		*root = rootMetadata.status;
 		printf("root: %d\n", *root);
         //update the size of the whole block next
          *(int*)(root+1) = rootMetadata.size; //2 will be the min metadata we can use
@@ -94,6 +95,9 @@ void* mymalloc(unsigned int size, char* file, int line){
     //FIND A BLOCK OF MEM WITH GIVEN SIZE
     printf("looking for memory\n");
     char* freeMem = findMem(size);
+	if (freeMem == NULL)
+		printf("free mem was null\n");
+else
     printf("freeMem is %d\n", *freeMem);
     if(freeMem != NULL){
         //check if block has too much available space

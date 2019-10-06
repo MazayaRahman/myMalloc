@@ -22,13 +22,12 @@ int main(int argc, char* argv[]){
     //int* test = 0;
     //free(test);
     int* ptr = (int*) malloc(40); //MAX is 4094
-     if (ptr == NULL)
-        return 0;
-
-    *ptr = 523;
+     if (ptr != NULL)
+        *ptr = 523;
 
     int* sec = (int*) malloc(10);
-    *sec = 36;
+    if (sec!=NULL)
+	*sec = 36;
 
 
 
