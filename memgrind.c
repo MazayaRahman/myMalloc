@@ -18,7 +18,7 @@ typedef struct Node{
 int main(int argc, char* argv[]){
 
     printf("program initiated\n");
-    int* ptr = (int*)malloc(4092); //MAX is 4091
+    int* ptr = (int*) malloc(4094); //MAX is 4094
     ptr = 523;
     free(ptr);
     
