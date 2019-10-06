@@ -7,10 +7,6 @@
 #define malloc( x ) mymalloc( x,__FILE__,__LINE__ )
 #define free( x ) myfree( x,__FILE__,__LINE__ )
 
-char myBlock[4096] = {'\0'};
-
-char* root = myBlock;
-
 void* mymalloc(unsigned int size, char* file, int line);
 void myfree(void* addr, char* file, int line);
 

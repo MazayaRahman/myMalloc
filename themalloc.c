@@ -1,5 +1,8 @@
 #include "themalloc.h"
+#include <stdio.h>
+#include <stdlib.h>
 
+base = (void*)memory;
 
 void initialize(){
     printf("the size of metadata is: %d\n", sizeof(struct metadata));

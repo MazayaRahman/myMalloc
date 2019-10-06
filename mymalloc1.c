@@ -1,9 +1,10 @@
 #include "mymalloc.h"
 #define BLOCKSIZE 4096
 
-//static char myBlock[BLOCKSIZE] = {'\0'};
+static char myBlock[BLOCKSIZE] = {'\0'};
 
-//char* root = myBlock;
+struct metadata* root = (struct metadata*)myBlock;
+int initialized = 0;
 
 struct metadata{
     unsigned short isFree: 4; //1 = free, 0 = in use
@@ -14,16 +15,17 @@ struct metadata{
 
 int memoryLeft = 4096;
 
-char* findMem(unsigned int size){
+struct metadata* findMem(unsigned int size){
 
     //start at root
-    char* ptr = root;
+    struct metadata* ptr = root;
     int currSize = 0;
-    printf("in findmem root: %d\n", *root);
+    printf("in findmem root: %d\n", root->size);
     while(ptr != NULL){
-        currSize = *(int*)(ptr+1);
+        //currSize = *(int*)(ptr+1);
+        currSize = ptr->size;
         printf("currSize compared to size: %d, %d\n", currSize,size);
-        if(*ptr == 1 && currSize >= size){
+        if(ptr->isFree == 1 && currSize >= size){
             //found it
             //memoryLeft -= size+1;
             return ptr;
@@ -35,29 +37,29 @@ char* findMem(unsigned int size){
             }
 	    }
 
-        ptr = ptr + currSize + 2;
+        ptr = ptr + currSize + sizeof(struct metadata);
     }
     return ptr;
 
 
 }
 
-void split(char* block, unsigned int size){
+void split(struct metadata* block, unsigned int size){
 
-    char* extra;
-    int block_size = *(int*)(block+1);
+    struct metadata* extra;
+    int block_size = block->size;
     printf("in split block size: %d\n", block_size);
 
     //extra block size
-    int extra_block_size = block_size - size - 2;
+    int extra_block_size = block_size - size - sizeof(struct metadata);
     printf("size of next extra: %d\n", extra_block_size);
 	if (extra_block_size > 0){
         struct metadata extraMetadata;
         extraMetadata.isFree = 1;
         extraMetadata.size = extra_block_size;
-	    extra = block + size + 2;
-	    *extra = extraMetadata.isFree;
-	    *(int*)(extra+1) = extraMetadata.size;
+	    extra = block + size + sizeof(struct metadata);
+	    extra->isFree = 1;
+	    extra->size = extra_block_size;
 	    return;
 	}
 	else{ //idk what to do, there isnt enough space for metadata
@@ -70,53 +72,56 @@ void* mymalloc(unsigned int size, char* file, int line){
     printf("malloc is called!\n");
     if(size <= 0 || memoryLeft<=size || memoryLeft <= 2) return NULL;
     printf("attemping to malloc %d bytes! Therefore we need at least %d bytes. We have about %d left.\n",size,size+2,memoryLeft);
-    printf("at root is: %d\n", *root);
-    printf("at myblock is: %c\n", myBlock[0]);
+    printf("at root is: %d\n", root->isFree);
+    printf("at root + 1 is: %d\n", root->size);
+    printf("size of metadata is: %d\n", sizeof(struct metadata));
     //check to see if root is initialized
-    if(!*root){ //FIRST USE, MUST INSTANTIATE MEMORY BLOCK
+    if(initialized == 0){ //FIRST USE, MUST INSTANTIATE MEMORY BLOCK
         //set metadata as free
         printf("First use of malloc\n");
+        initialized = 1;
         struct metadata rootMetadata;
 		rootMetadata.isFree = 1;
-		rootMetadata.size = BLOCKSIZE -2;
-		*root = rootMetadata.isFree;
-		printf("root: %d\n", *root);
+		rootMetadata.size = BLOCKSIZE - sizeof(struct metadata);
+		*(struct metadata*)root = rootMetadata;
+		printf("root: %d\n", root->size);
+
         //update the size of the whole block next
-        *(int*)(root+1) = rootMetadata.size; //2 will be the min metadata we can use
+        //*(int*)(root+1) = rootMetadata.size; //2 will be the min metadata we can use
     }
 
     //FIND A BLOCK OF MEM WITH GIVEN SIZE
     printf("looking for memory\n");
-    char* freeMem = findMem(size);
-    printf("freeMem is %d\n", *freeMem);
+    struct metadata* freeMem = findMem(size);
+    printf("freeMem is %d\n", freeMem->isFree);
     if(freeMem != NULL){
         //check if block has too much available space
         //printf("found memory\n");
-	printf("freeMem+1 is %d\n",*(int*)(freeMem+1));
-        if(*(int*)(freeMem+1) > size){
+	printf("freeMem+1 is %d\n",freeMem->size);
+        if(freeMem->size > size){
             printf("leftover memory too big, splitting \n");
             split(freeMem,size);
         }
         if(freeMem == root){
             printf("theyre equal\n");
         }
-	    *(freeMem) = 0;
-	    *(int*) (freeMem+1) = size; //assign the metadata
+	    freeMem->isFree = 0;
+	    freeMem->size = size; //assign the metadata
         memoryLeft -= size + 2;
         printf("memory left after mallocing: %d\n",memoryLeft);
-        printf("memory in use at root: %d\n", *(int*)(root+1));
-        printf("at root is: %d\n", *root);
+        printf("memory in use at root: %d\n", root->size);
+        printf("at root is: %d\n", root->isFree);
     }else{
         printf("no memory found\n");
         return NULL;
     }
 
     //return the pointer after metadata
-    return  freeMem+2;
+    return  freeMem+sizeof(struct metadata);
 }
 
 void myfree(void* addr, char* file, int line){
-    //root = myBlock;
+    root = myBlock;
     printf("memory in use at root: %d\n", *(int*)(root+1));
 
 
