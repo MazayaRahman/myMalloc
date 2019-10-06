@@ -1,7 +1,7 @@
 #include "mymalloc.h"
 #define BLOCKSIZE 4096
 
-//static char myBlock[BLOCKSIZE] = {'\0'};
+static char myBlock[BLOCKSIZE];
 
 //char* root = myBlock;
 
