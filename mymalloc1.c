@@ -54,9 +54,6 @@ void split(struct metadata* block, unsigned int size){
     int extra_block_size = block_size - size - sizeof(struct metadata);
     printf("size of next extra: %d\n", extra_block_size);
 	if (extra_block_size > 0){
-        struct metadata extraMetadata;
-        extraMetadata.isFree = 1;
-        extraMetadata.size = extra_block_size;
 	    extra = block + size + sizeof(struct metadata);
 	    extra->isFree = 1;
 	    extra->size = extra_block_size;
