@@ -19,33 +19,29 @@ typedef struct Node{
 int main(int argc, char* argv[]){
 
     printf("program initiated\n");
-    char* p = (char*) malloc(200);
-	free(p+10);   
-   
-	/*
+/*
+    struct testStruct* test = malloc((sizeof(struct testStruct)));
+    test->testChar = 'm';
+    test->testInt = 13;
 
-    char* one = malloc(8);
-    one = "hello";
-    char* two = malloc(10);
-    two = "HOLAAA";
-
-    printf("8 %p \n", one);
-    printf("%s\n", one);
-
-    printf("10 %p \n", two);
-    printf("%s\n", two);
-
-    one = "Bye";
-    printf("%s\n", one);
-
-    */
+    free(test);
+*/
+    //char* ptr = (char*) malloc(sizeof(char)*12);
+    //ptr[0] = 'm'; ptr[1] = 'p';
+    //TODO: why does initializing thing change the address
+    //int* arr = (int*) malloc(3*sizeof(int));
+    //arr[0] = 3;
+    //free(ptr);
+    //free(arr);
 
 
-    /*
+
 //TESTING WORKLOADS:
     //TESTING A: malloc and free 1 byte 150 times
+    /*
     int i;
     for (i = 0; i <150; i++){
+        printf("iteration i: %d\n", i);
         char* test = (char*) malloc(1);
         free(test);
     }
@@ -69,7 +65,8 @@ int main(int argc, char* argv[]){
 
     //TESTING C: random
     //TODO keep array of char pointers
-    int mallocs = 0, frees = 0;
+    int mallocs = 0, i = 0;
+    char** pointers[50];
     while(mallocs <= 50 ){ //while neither of them is not over 50
         if (mallocs == 50){ //free them all
             //TODO
@@ -81,16 +78,78 @@ int main(int argc, char* argv[]){
         if (letsMalloc) {
             mallocs++;
             char* ptr = (char*) malloc(1);
+            pointers[i] = ptr;
+            i++;
             //TODO insert into array?
-        else{ //free
-            if (mallocs == 0) //there is nothing to free
+        }else{ //free
+            if (i == 0) //there is nothing to free
                 continue;
-            frees++;
+            else{
+                free(pointers[i-1]);
+                i--;
+            }
+            //frees++;
             //TODO free something
         }
     }
-  	*/
+    //free rest of ptrs
+    i--;
+    while(i >= 0){
+        free(pointers[i]);
+        i--;
+    }
+
+
+    //TESTING D: random
+    //TODO keep array of char pointers
+    int mallocs = 0, i = 0;
+    char** pointers[50];
+    while(mallocs <= 50 ){ //while neither of them is not over 50
+        if (mallocs == 50){ //free them all
+            //TODO
+            break;
+        }
+
+
+        int letsMalloc = rand() % 2; //either 1 or 0
+        if (letsMalloc) {
+            mallocs++;
+            int size = rand() % 64 + 1;
+            char* ptr = (char*) malloc(1*size);
+            pointers[i] = ptr;
+            i++;
+            //TODO insert into array?
+        }else{ //free
+            if (i == 0) //there is nothing to free
+                continue;
+            else{
+                free(pointers[i-1]);
+                i--;
+            }
+            //frees++;
+            //TODO free something
+        }
+    }
+    //free rest of ptrs
+    i--;
+    while(i >= 0){
+        free(pointers[i]);
+        i--;
+    }
+
     //OTHER WORKLOAD #1 - MALLOC A STRUCT
+
+    int i;
+    for (i = 0; i <150; i++){
+        printf("iteration i: %d\n", i);
+        struct testStruct* test = (struct testStruct*) malloc(1*sizeof(struct testStruct));
+        free(test);
+    }
+*/
     //OTHER WORKLOAD #2 - MALLOC A LINKED LIST
+
+    char* p = (char*)(malloc(4096-2));
+    char* q = malloc(1);
+
     return(0);
 }

@@ -32,7 +32,7 @@ struct metadata* findMem(unsigned int size){
         }
 	    else{
 		    if(ptr + currSize + size >= root + BLOCKSIZE - 1){ //there isnt enough space
-                printf("HERE\n");
+                printf("saturation of dynamic memory\n");
                 return NULL;
             }
 	    }
@@ -67,14 +67,11 @@ void split(struct metadata* block, unsigned int size){
 
 void* mymalloc(unsigned int size, char* file, int line){
     printf("malloc is called!\n");
-    if(size <= 0 || memoryLeft == 0 || memoryLeft<=size || memoryLeft <= 2){
-	printf("saturation of dynamic memory\n");
+    if(size <= 0){
+	printf("cannot allocate 0 bytes\n");
 	 return NULL;
     }
 	printf("attemping to malloc %d bytes! Therefore we need at least %d bytes. We have about %d left.\n",size,size+2,memoryLeft);
-    printf("at root is: %d\n", root->isFree);
-    printf("at root + 1 is: %d\n", root->size);
-    printf("size of metadata is: %d\n", sizeof(struct metadata));
     //check to see if root is initialized
     if(initialized == 0){ //FIRST USE, MUST INSTANTIATE MEMORY BLOCK
         //set metadata as free
@@ -84,45 +81,39 @@ void* mymalloc(unsigned int size, char* file, int line){
 		rootMetadata.isFree = 1;
 		rootMetadata.size = BLOCKSIZE - sizeof(struct metadata);
 		*(struct metadata*)root = rootMetadata;
-		printf("root: %d\n", root->size);
 
         //update the size of the whole block next
         //*(int*)(root+1) = rootMetadata.size; //2 will be the min metadata we can use
     }
 
     //FIND A BLOCK OF MEM WITH GIVEN SIZE
-    printf("looking for memory\n");
     struct metadata* freeMem = findMem(size);
-    printf("freeMem is %d\n", freeMem->isFree);
+    //printf("freeMem is %d\n", freeMem->isFree);
     if(freeMem != NULL){
         //check if block has too much available space
         //printf("found memory\n");
-	printf("freeMem+1 is %d\n",freeMem->size);
         if(freeMem->size > size){
             printf("leftover memory too big, splitting \n");
             split(freeMem,size);
         }
-        if(freeMem == root){
-            printf("theyre equal\n");
-        }
+
 	    freeMem->isFree = 0;
 	    freeMem->size = size; //assign the metadata
         memoryLeft -= size + 2;
-        printf("memory left after mallocing: %d\n",memoryLeft);
-        printf("memory in use at root: %d\n", root->size);
-        printf("at root is: %d\n", root->isFree);
+        //printf("memory left after mallocing: %d\n",memoryLeft);
+        //printf("memory in use at root: %d\n", root->size);
     }else{
         printf("no memory found\n");
         return NULL;
     }
 
     //return the pointer after metadata
+    printf("freemem is: %d\n", freeMem->isFree);
     return  freeMem+sizeof(struct metadata);
 }
 
 void myfree(void* addr, char* file, int line){
    //check if addr is null or has already been freed
-    
     if(addr == NULL){
         printf("invalid free\n");
         return;
@@ -134,21 +125,25 @@ void myfree(void* addr, char* file, int line){
     int currSize = 0;
 
     while(ptr != NULL){
+    printf("addr is %p\n", addr);
+    printf("ptr is %p\n", ptr+sizeof(struct metadata));
        if(ptr + sizeof(struct metadata) == addr) {
             printf("found pointer\n");
             break; //cuz we found the ptr
         }else{
 	currSize = ptr->size;
         printf("currsize: %d\n", currSize);
-       	
+
             prev = ptr;
+            printf("ptr size: %d\n", ptr->size);
             ptr = ptr + currSize + sizeof(struct metadata);
+            if(ptr >= root + BLOCKSIZE - 1) break;
         }
     }
 
 	printf("out of the loop!\n");
-    if(ptr == NULL){
-        printf("Doesn't exits\n");
+    if(ptr >= root + BLOCKSIZE - 1){
+        printf("Doesn't exist\n");
         return;
     }
 if (ptr->isFree == 1){
@@ -156,9 +151,8 @@ if (ptr->isFree == 1){
 	return;
 }
     if(prev != NULL){
-        printf("here~\n");
         if(prev->isFree == 1){
-            printf("prev is free\n");
+            //printf("prev is free\n");
             prev->size += ptr->size + sizeof(struct metadata);
             ptr = prev;
         }
@@ -166,18 +160,17 @@ if (ptr->isFree == 1){
 
 
     struct metadata *next = ptr + ptr->size + sizeof(struct metadata);
-   
+
     if(next != NULL){ //if next is past the array bounds
-        printf("next is not null\n");
-     
+
         if(next->isFree == 1){
-            printf("next is free\n");
+            //printf("next is free\n");
             ptr->size += next->size + sizeof(struct metadata);
-        }else{
-            printf("hereeee\n");
         }
     }
 
     ptr->isFree = 1;
+    memoryLeft += ptr->size;
+    printf("free complete!\n");
 }
 
