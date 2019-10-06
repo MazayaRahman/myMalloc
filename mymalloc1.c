@@ -118,31 +118,25 @@ void* mymalloc(unsigned int size, char* file, int line){
 }
 
 void myfree(void* addr, char* file, int line){
-    root = myBlock;
-    printf("memory in use at root: %d\n", *(int*)(root+1));
-
-
-}
-/*
-void myfree(void* addr, char* file, int line){
+    
     if(addr == NULL){
         printf("invalid free\n");
         return;
     }
-    char* ptr = root;
-    printf("root's size: %d\n", *(int*)(root+1));
-    char* prev = NULL;
+
+    struct metadata *ptr = root;
+    printf("root's size: %d\n", ptr->size);
+    struct metadata *prev = NULL;
     int currSize = 0;
     while(ptr != NULL){
-        currSize = *(int*)(ptr+1);
+        currSize = ptr->size;
         printf("currsize: %d\n", currSize);
-        if(ptr == addr - 2){
+        if(ptr == addr - sizeof(struct metadata)){
             printf("found pointer\n");
             break; //cuz we found the ptr
         }else{
             prev = ptr;
-            ptr = ptr + currSize + 2;
-            //next = ptr + *(int*)(ptr+1)+ 2;
+            ptr = ptr + currSize + sizeof(struct metadata);
         }
     }
     if(ptr == NULL){
@@ -152,34 +146,27 @@ void myfree(void* addr, char* file, int line){
 
     if(prev != NULL){
         printf("here~\n");
-        if(*prev == 1){
+        if(prev->isFree == 1){
             printf("prev is free\n");
-            *(int*)(prev+1) += *(int*)(ptr+1)+2;
+            prev->size += ptr->size + sizeof(struct metadata);
             ptr = prev;
         }
     }
 
 
-    char* next = ptr + *(int*)(ptr+1) + 2;
-    next = 1;
-    printf("%d\n", next);
-    if(next == 1){
-        printf("%d\n", next);
-    }
-
-
-
-    if(next != NULL && next != '\0'){
+    struct metdata *next = ptr + ptr->size + sizeof(struct metadata);
+   
+    if(next != NULL){ //if next is past the array bounds
         printf("next is not null\n");
-        printf("%p\n", next);
-        if(next == 0){
+     
+        if(next->isFree == 1){
             printf("next is free\n");
-            *(int*)(ptr+1) += *(int*)(next+1)+2;
+            ptr->size += next->size + sizeof(struct metadata);
         }else{
             printf("hereeee\n");
         }
     }
 
-    *ptr = 1;
+    ptr->isFree = 1;
 }
-*/
+
