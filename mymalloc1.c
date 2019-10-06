@@ -1,7 +1,7 @@
 #include "mymalloc.h"
 #define BLOCKSIZE 4096
 
-static char myBlock[4096]  ;
+static char myBlock[4096];
 
 char* root = myBlock;
 
@@ -56,10 +56,10 @@ void split(char* block, unsigned int size){
     printf("size of next extra: %d\n", extra_block_size);
 	if (extra_block_size > 0){
         struct metadata extraMetadata;
-        extraMetadata.isFree = isFree;
+        extraMetadata.status = isFree;
         extraMetadata.size = extra_block_size;
 	    extra = block + size + 2;
-	    *extra = extraMetadata.isFree;
+	    *extra = extraMetadata.staus;
 	    *(int*)(extra+1) = extraMetadata.size;
 	    return;
 	}
@@ -80,7 +80,7 @@ void* mymalloc(unsigned int size, char* file, int line){
         //set metadata as free
         printf("First use of malloc\n");
         struct metadata rootMetadata;
-		rootMetadata.isFree = 1;
+		rootMetadata.status = isFree;
 		rootMetadata.size = BLOCKSIZE -2;
 		printf("rootmetadata size = %d\n", rootMetadata.size);
 		*root = rootMetadata.isFree;
@@ -106,7 +106,7 @@ void* mymalloc(unsigned int size, char* file, int line){
         if(freeMem == root){
             printf("theyre equal\n");
         }
-	    *(freeMem) = 0;
+	    *(freeMem) = inUse;
 	    *(int*) (freeMem+1) = size; //assign the metadata
         memoryLeft -= size + 2;
         printf("memory left after mallocing: %d\n",memoryLeft);
