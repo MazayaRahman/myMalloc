@@ -23,7 +23,7 @@ char* findMem(unsigned int size){
     while(ptr != NULL){
         currSize = *(int*)(ptr+1);
         printf("currSize compared to size: %d, %d\n", currSize,size);
-        if(*ptr == isFree && currSize >= size){ 
+        if(*ptr == 1 && currSize >= size){ 
             //found it
             //memoryLeft -= size+1;
             return ptr;
@@ -51,11 +51,11 @@ void split(char* block, unsigned int size){
     int extra_block_size = block_size - size - 2;
 	if (extra_block_size > 0){
         struct metadata extraMetadata;
-        extraMetadata->isFree = 1;
-        extraMetadata->size = extra_block_size;
+        extraMetadata.isFree = 1;
+        extraMetadata.size = extra_block_size;
 	    extra = block + size + 2;
-	    *extra = extraMetadata->isFree;
-	    *(int*)(extra+1) = extraMetadata->size;
+	    *extra = extraMetadata.isFree;
+	    *(int*)(extra+1) = extraMetadata.size;
 	    return;
 	}
 	else{ //idk what to do, there isnt enough space for metadata
@@ -74,11 +74,11 @@ void* mymalloc(unsigned int size, char* file, int line){
         //set metadata as free
         printf("First use of malloc\n");
         struct metadata rootMetadata;
-		rootMetadata->isFree = 1;
-		rootMetadata->size = BLOCKSIZE -2;
-		*root = rootMetadata->isFree;
+		rootMetadata.isFree = 1;
+		rootMetadata.size = BLOCKSIZE -2;
+		*root = rootMetadata.isFree;
         //update the size of the whole block next
-        *(int*)(root+1) = rootMetadata->size; //2 will be the min metadata we can use 
+        *(int*)(root+1) = rootMetadata.size; //2 will be the min metadata we can use 
     }
 
     //FIND A BLOCK OF MEM WITH GIVEN SIZE
