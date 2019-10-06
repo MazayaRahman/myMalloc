@@ -67,8 +67,11 @@ void split(struct metadata* block, unsigned int size){
 
 void* mymalloc(unsigned int size, char* file, int line){
     printf("malloc is called!\n");
-    if(size <= 0 || memoryLeft<=size || memoryLeft <= 2) return NULL;
-    printf("attemping to malloc %d bytes! Therefore we need at least %d bytes. We have about %d left.\n",size,size+2,memoryLeft);
+    if(size <= 0 || memoryLeft == 0 || memoryLeft<=size || memoryLeft <= 2){
+	printf("saturation of dynamic memory\n");
+	 return NULL;
+    }
+	printf("attemping to malloc %d bytes! Therefore we need at least %d bytes. We have about %d left.\n",size,size+2,memoryLeft);
     printf("at root is: %d\n", root->isFree);
     printf("at root + 1 is: %d\n", root->size);
     printf("size of metadata is: %d\n", sizeof(struct metadata));
@@ -118,6 +121,7 @@ void* mymalloc(unsigned int size, char* file, int line){
 }
 
 void myfree(void* addr, char* file, int line){
+   //check if addr is null or has already been freed
     
     if(addr == NULL){
         printf("invalid free\n");
@@ -128,22 +132,29 @@ void myfree(void* addr, char* file, int line){
     printf("root's size: %d\n", ptr->size);
     struct metadata *prev = NULL;
     int currSize = 0;
+
     while(ptr != NULL){
-        currSize = ptr->size;
-        printf("currsize: %d\n", currSize);
-        if(ptr == addr - sizeof(struct metadata)){
+       if(ptr + sizeof(struct metadata) == addr) {
             printf("found pointer\n");
             break; //cuz we found the ptr
         }else{
+	currSize = ptr->size;
+        printf("currsize: %d\n", currSize);
+       	
             prev = ptr;
             ptr = ptr + currSize + sizeof(struct metadata);
         }
     }
+
+	printf("out of the loop!\n");
     if(ptr == NULL){
         printf("Doesn't exits\n");
         return;
     }
-
+if (ptr->isFree == 1){
+	printf("ptr has already been freed\n");
+	return;
+}
     if(prev != NULL){
         printf("here~\n");
         if(prev->isFree == 1){
@@ -154,7 +165,7 @@ void myfree(void* addr, char* file, int line){
     }
 
 
-    struct metdata *next = ptr + ptr->size + sizeof(struct metadata);
+    struct metadata *next = ptr + ptr->size + sizeof(struct metadata);
    
     if(next != NULL){ //if next is past the array bounds
         printf("next is not null\n");

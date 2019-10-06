@@ -19,24 +19,10 @@ typedef struct Node{
 int main(int argc, char* argv[]){
 
     printf("program initiated\n");
-    //int* test = 0;
-    //free(test);
-    int* ptr = (int*) malloc(40); //MAX is 4094
-     if (ptr == NULL)
-        return 0;
-
-    *ptr = 523;
-
-    int* sec = (int*) malloc(10);
-    *sec = 36;
-
-
-
-    //free(ptr);
-
-
-
-    /*
+    char* p = (char*) malloc(200);
+	free(p+10);   
+   
+	/*
 
     char* one = malloc(8);
     one = "hello";
