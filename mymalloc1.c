@@ -1,18 +1,21 @@
 #include "mymalloc.h"
 #define BLOCKSIZE 4096
 
-static char myBlock[BLOCKSIZE];
+static char myBlock[4096]  ;
 
-//char* root = myBlock;
+char* root = myBlock;
 
 struct metadata{
-    unsigned short isFree: 4; //1 = free, 0 = in use
+    unsigned short status: 4; //1 = free, 2 = in use
     unsigned short size: 12;
 };
 //short = 2 bytes = 16 bits; partition one short into status (isFree or not) and size of data needed
 //we partition size into 12 bits because thats all we need (2^12 = 4096) rest of byte is status
 
 int memoryLeft = 4096;
+
+const unsigned short isFree = 1;
+const unsigned short inUse = 2;
 
 char* findMem(unsigned int size){
 
@@ -53,7 +56,7 @@ void split(char* block, unsigned int size){
     printf("size of next extra: %d\n", extra_block_size);
 	if (extra_block_size > 0){
         struct metadata extraMetadata;
-        extraMetadata.isFree = 1;
+        extraMetadata.isFree = isFree;
         extraMetadata.size = extra_block_size;
 	    extra = block + size + 2;
 	    *extra = extraMetadata.isFree;
@@ -73,17 +76,20 @@ void* mymalloc(unsigned int size, char* file, int line){
     printf("at root is: %d\n", *root);
     printf("at myblock is: %c\n", myBlock[0]);
     //check to see if root is initialized
-    if(!*root){ //FIRST USE, MUST INSTANTIATE MEMORY BLOCK
+    if(!myBlock[0]){// == '\0'){ //FIRST USE, MUST INSTANTIATE MEMORY BLOCK
         //set metadata as free
         printf("First use of malloc\n");
         struct metadata rootMetadata;
 		rootMetadata.isFree = 1;
 		rootMetadata.size = BLOCKSIZE -2;
+		printf("rootmetadata size = %d\n", rootMetadata.size);
 		*root = rootMetadata.isFree;
 		printf("root: %d\n", *root);
         //update the size of the whole block next
-        *(int*)(root+1) = rootMetadata.size; //2 will be the min metadata we can use
-    }
+         *(int*)(root+1) = rootMetadata.size; //2 will be the min metadata we can use
+		printf("root + 1: %d\n", *(int*)(root+1));   
+		
+ 	}	
 
     //FIND A BLOCK OF MEM WITH GIVEN SIZE
     printf("looking for memory\n");

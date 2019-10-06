@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-//#include "mymalloc.h"
-#include "themalloc.h"
+#include "mymalloc.h"
+//#include "themalloc.h"
 
 //TESTING THIS NEW COMMIT
 
