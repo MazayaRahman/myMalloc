@@ -15,7 +15,7 @@ struct metadata{
 
 int memoryLeft = 4096;
 
-struct metadata* findMem(unsigned int size){
+struct metadata* findMem(unsigned int size, char* file, int line){
 
     //start at root
     struct metadata* ptr = root;
@@ -32,7 +32,7 @@ struct metadata* findMem(unsigned int size){
         }
 	    else{
 		    if(ptr + currSize + size >= root + BLOCKSIZE - 1){ //there isnt enough space
-                printf("saturation of dynamic memory\n");
+                printf("saturation of dynamic memory in FILE: '%s' on LINE: '%d'\n", file, line);
                 return NULL;
             }
 	    }
@@ -68,7 +68,7 @@ void split(struct metadata* block, unsigned int size){
 void* mymalloc(unsigned int size, char* file, int line){
     printf("malloc is called!\n");
     if(size <= 0){
-	printf("cannot allocate 0 bytes\n");
+	printf("Unable to allocate 0 bytes in FILE: '%s' on LINE: '%d'\n", file, line);
 	 return NULL;
     }
 	printf("attemping to malloc %d bytes! Therefore we need at least %d bytes. We have about %d left.\n",size,size+2,memoryLeft);
@@ -87,7 +87,7 @@ void* mymalloc(unsigned int size, char* file, int line){
     }
 
     //FIND A BLOCK OF MEM WITH GIVEN SIZE
-    struct metadata* freeMem = findMem(size);
+    struct metadata* freeMem = findMem(size, file, line);
     //printf("freeMem is %d\n", freeMem->isFree);
     if(freeMem != NULL){
         //check if block has too much available space
@@ -115,7 +115,7 @@ void* mymalloc(unsigned int size, char* file, int line){
 void myfree(void* addr, char* file, int line){
    //check if addr is null or has already been freed
     if(addr == NULL){
-        printf("invalid free\n");
+        printf("Attempting to free memory that was not malloced in FILE: '%s' on LINE: '%d'\n", file, line);
         return;
     }
 
@@ -143,11 +143,11 @@ void myfree(void* addr, char* file, int line){
 
 	printf("out of the loop!\n");
     if(ptr >= root + BLOCKSIZE - 1){
-        printf("Doesn't exist\n");
+        printf("Attempting to free memory that was not malloced in FILE: '%s' on LINE: '%d'\n", file, line);
         return;
     }
 if (ptr->isFree == 1){
-	printf("ptr has already been freed\n");
+	printf("Redundant free of the same pointer in FILE: '%s' on LINE: '%d'\n", file, line);
 	return;
 }
     if(prev != NULL){

@@ -84,7 +84,7 @@ void workloadC(){
 }
 
 void workloadD(){
- 
+
     int mallocs = 0, i = 0;
     char** pointers[50];
     while(mallocs <= 50 ){ //while we havent reached 50 mallocs
@@ -138,20 +138,21 @@ void workloadF(){
 int main(int argc, char* argv[]){
 
     printf("program initiated\n");
-   
+
+
     //TODO: memcpy
     char* testPointer = (char*) malloc(12*sizeof(char));
-    char* str = "Mazaya&Priya";
-    strcpy(testPointer,str); 
-    
+    testPointer = "Mazaya&Priya";
+    //strcpy(testPointer,str);
+
     printf("value at ptr in our heap: %s\n", testPointer);
-    
+
     free(testPointer);
 
-    /*
+/*
     //initialize total runtime
 	float runtimeA = 0, runtimeB = 0, runtimeC = 0, runtimeD = 0,runtimeE = 0,runtimeF = 0;
-	
+
     int workloads = 0;
 	while (workloads < 100){
 
@@ -188,18 +189,18 @@ int main(int argc, char* argv[]){
 	    workloadF();
 		gettimeofday(&endF,NULL);
 		runtimeF += (float)(endF.tv_sec-startF.tv_sec);
-	
+
 		workloads++;
 	}
 
     printf("totalA: %f\ntotalB: %f\ntotalC: %f\ntotalD: %f\ntotalE: %f\ntotalF: %f\n",runtimeA,runtimeB,runtimeC,runtimeD,runtimeE,runtimeF);
-    
+
 
 	//calculate avg
 	float avgA = runtimeA/100, avgB = runtimeB/100, avgC = runtimeC/100, avgD = runtimeD/100, avgE = runtimeE/100, avgF = runtimeF/100;
 	//print the mean runtime in order of workload? or in order of time? TODO
 	printf("mean A: %f\nmeanB: %f\nmeanC: %f\nmeanD: %f\nmeanE: %f\nmeanF: %f\n",avgA,avgB,avgC,avgD,avgE,avgF);
-    */
-    
+
+*/
     return(0);
 }
