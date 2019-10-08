@@ -1,8 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
-//#include "mymalloc.h"
+#include <time.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <time.h>
 #include "mymalloc.h"
-
 //TESTING THIS NEW COMMIT
 
 struct testStruct{
@@ -16,39 +19,19 @@ typedef struct Node{
     struct Node* next;
 }Node;
 
-int main(int argc, char* argv[]){
-
-    printf("program initiated\n");
-/*
-    struct testStruct* test = malloc((sizeof(struct testStruct)));
-    test->testChar = 'm';
-    test->testInt = 13;
-
-    free(test);
-*/
-    //char* ptr = (char*) malloc(sizeof(char)*12);
-    //ptr[0] = 'm'; ptr[1] = 'p';
-    //TODO: why does initializing thing change the address
-    //int* arr = (int*) malloc(3*sizeof(int));
-    //arr[0] = 3;
-    //free(ptr);
-    //free(arr);
 
 
-
-//TESTING WORKLOADS:
-    //TESTING A: malloc and free 1 byte 150 times
-    /*
+void workloadA(){
     int i;
     for (i = 0; i <150; i++){
         printf("iteration i: %d\n", i);
         char* test = (char*) malloc(1);
         free(test);
     }
+}
 
-
-    //TESTING B: malloc and store
-    int counter = 0;
+void workloadB(){
+    int counter = 0, i;
     char** pointers[50];
     for (i = 0; i < 150; i++){
         char* ptr = (char*) malloc(1);
@@ -62,17 +45,17 @@ int main(int argc, char* argv[]){
         }
     }
 
+}
 
-    //TESTING C: random
-    //TODO keep array of char pointers
+void workloadC(){
+
     int mallocs = 0, i = 0;
     char** pointers[50];
-    while(mallocs <= 50 ){ //while neither of them is not over 50
+    while(mallocs <= 50 ){ //while we havent reached 50 mallocs
         if (mallocs == 50){ //free them all
             //TODO
             break;
         }
-
 
         int letsMalloc = rand() % 2; //either 1 or 0
         if (letsMalloc) {
@@ -98,19 +81,17 @@ int main(int argc, char* argv[]){
         free(pointers[i]);
         i--;
     }
+}
 
-
-    //TESTING D: random
-    //TODO keep array of char pointers
+void workloadD(){
+ 
     int mallocs = 0, i = 0;
     char** pointers[50];
-    while(mallocs <= 50 ){ //while neither of them is not over 50
+    while(mallocs <= 50 ){ //while we havent reached 50 mallocs
         if (mallocs == 50){ //free them all
             //TODO
             break;
         }
-
-
         int letsMalloc = rand() % 2; //either 1 or 0
         if (letsMalloc) {
             mallocs++;
@@ -136,8 +117,9 @@ int main(int argc, char* argv[]){
         free(pointers[i]);
         i--;
     }
+}
 
-    //OTHER WORKLOAD #1 - MALLOC A STRUCT
+void workloadE(){
 
     int i;
     for (i = 0; i <150; i++){
@@ -145,11 +127,79 @@ int main(int argc, char* argv[]){
         struct testStruct* test = (struct testStruct*) malloc(1*sizeof(struct testStruct));
         free(test);
     }
-*/
-    //OTHER WORKLOAD #2 - MALLOC A LINKED LIST
+}
 
+void workloadF(){
     char* p = (char*)(malloc(4096-2));
     char* q = malloc(1);
 
+}
+
+int main(int argc, char* argv[]){
+
+    printf("program initiated\n");
+   
+    //TODO: memcpy
+    char* testPointer = (char*) malloc(12*sizeof(char));
+    char* str = "Mazaya&Priya";
+    strcpy(testPointer,str); 
+    
+    printf("value at ptr in our heap: %s\n", testPointer);
+    
+    free(testPointer);
+
+    /*
+    //initialize total runtime
+	float runtimeA = 0, runtimeB = 0, runtimeC = 0, runtimeD = 0,runtimeE = 0,runtimeF = 0;
+	
+    int workloads = 0;
+	while (workloads < 100){
+
+	    //initialize clock for each workload
+	    struct timeval startA, startB, startC, startD, startE, startF, endA, endB, endC, endD, endE, endF;
+	    //TESTING WORKLOADS:
+    	//TESTING A: malloc and free 1 byte 150 times
+    	gettimeofday(&startA,NULL);
+	    workloadA();
+		gettimeofday(&endA,NULL);
+		runtimeA += (float)(endA.tv_sec-startA.tv_sec);
+	    //TESTING B: malloc and store
+	    gettimeofday(&startB,NULL);
+	    workloadB();
+		gettimeofday(&endB,NULL);
+		runtimeB += (float)(endB.tv_sec-startB.tv_sec);
+	    //TESTING C: random
+		gettimeofday(&startC,NULL);
+	    workloadC();
+		gettimeofday(&endC,NULL);
+		runtimeC += (float)(endC.tv_sec-startC.tv_sec);
+   	    //TESTING D: random
+   	 	gettimeofday(&startD,NULL);
+	    workloadD();
+		gettimeofday(&endD,NULL);
+		runtimeD += (float)(endD.tv_sec-startD.tv_sec);
+       	//OTHER WORKLOAD #1 - MALLOC A STRUCT
+       	gettimeofday(&startE,NULL);
+	    workloadE();
+		gettimeofday(&endE,NULL);
+		runtimeE += (float)(endE.tv_sec-startE.tv_sec);
+        //OTHER WORKLOAD #2 - MALLOC A LINKED LIST
+		gettimeofday(&startF,NULL);
+	    workloadF();
+		gettimeofday(&endF,NULL);
+		runtimeF += (float)(endF.tv_sec-startF.tv_sec);
+	
+		workloads++;
+	}
+
+    printf("totalA: %f\ntotalB: %f\ntotalC: %f\ntotalD: %f\ntotalE: %f\ntotalF: %f\n",runtimeA,runtimeB,runtimeC,runtimeD,runtimeE,runtimeF);
+    
+
+	//calculate avg
+	float avgA = runtimeA/100, avgB = runtimeB/100, avgC = runtimeC/100, avgD = runtimeD/100, avgE = runtimeE/100, avgF = runtimeF/100;
+	//print the mean runtime in order of workload? or in order of time? TODO
+	printf("mean A: %f\nmeanB: %f\nmeanC: %f\nmeanD: %f\nmeanE: %f\nmeanF: %f\n",avgA,avgB,avgC,avgD,avgE,avgF);
+    */
+    
     return(0);
 }
