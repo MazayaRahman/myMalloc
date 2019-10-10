@@ -180,37 +180,37 @@ int main(int argc, char* argv[]){
     	gettimeofday(&startA,NULL);
 	    workloadA();
 		gettimeofday(&endA,NULL);
-		runtimeA += (float)(endA.tv_usec-startA.tv_usec);
+		runtimeA += (float)(endA.tv_usec-startA.tv_usec + endA.tv_sec-startA.tv_sec);
 	    
         //TESTING B: malloc and store
 	    gettimeofday(&startB,NULL);
 	    workloadB();
 		gettimeofday(&endB,NULL);
-		runtimeB += (float)(endB.tv_usec-startB.tv_usec);
+		runtimeB += (float)(endB.tv_usec-startB.tv_usec + endB.tv_sec-startB.tv_sec);
 	    
         //TESTING C: random
 		gettimeofday(&startC,NULL);
 	    workloadC();
 		gettimeofday(&endC,NULL);
-		runtimeC += (float)(endC.tv_usec-startC.tv_usec);
+		runtimeC += (float)(endC.tv_usec-startC.tv_usec + endC.tv_sec-startC.tv_sec);
    	    
         //TESTING D: random
    	 	gettimeofday(&startD,NULL);
 	    workloadD();
 		gettimeofday(&endD,NULL);
-		runtimeD += (float)(endD.tv_usec-startD.tv_usec);
+		runtimeD += (float)(endD.tv_usec-startD.tv_usec + endD.tv_sec-startD.tv_sec);
        	
         //OTHER WORKLOAD #1 - MALLOC A LL
        	gettimeofday(&startE,NULL);
 	    workloadE();
 		gettimeofday(&endE,NULL);
-		runtimeE += (float)(endE.tv_usec-startE.tv_usec);
+		runtimeE += (float)(endE.tv_usec-startE.tv_usec + endE.tv_sec-startE.tv_sec);
         
         //OTHER WORKLOAD #2 - STRCPY AND FREE
 		gettimeofday(&startF,NULL);
 	    workloadF();
 		gettimeofday(&endF,NULL);
-		runtimeF += (float)(endF.tv_usec-startF.tv_usec);
+		runtimeF += (float)(endF.tv_usec-startF.tv_usec + endF.tv_sec-startF.tv_sec);
 	
 	}
 
@@ -220,6 +220,8 @@ int main(int argc, char* argv[]){
 	float avgA = runtimeA/100, avgB = runtimeB/100, avgC = runtimeC/100, avgD = runtimeD/100, avgE = runtimeE/100, avgF = runtimeF/100;
 	//print the mean runtime in order of workload? or in order of time? TODO
 	printf("meanA: %f\nmeanB: %f\nmeanC: %f\nmeanD: %f\nmeanE: %f\nmeanF: %f\n",avgA,avgB,avgC,avgD,avgE,avgF);
+
+
 
     return(0);
 }
