@@ -1,6 +1,6 @@
 The workloads we included were Workload E and Workload F.
 
-Workload E mallocs and frees a linked list of 50 Nodes. We wanted to included this because data structures are integral parts of programming, and so creating a linked list would test the capabilities of our program while having a very important functionality.
+Workload E mallocs and frees a linked list of 50 Nodes. We wanted to included this because data structures are integral parts of programming, and so creating a linked list would test the capabilities of our program while having a very important functionality. This also lets us test our malloc and free functions against user created data types, in our case, a struct with data and pointers.
 
 Workload F uses strcpy to truly test if our heap is able to hold and maintain the data as intended. Also, we were curious to see if we can actually write data into our array and actually access/read said data. We used strcpy to malloc and immediately free the string "I love CS214 more than anything else!" 150 times. 
  
